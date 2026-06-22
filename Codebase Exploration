@@ -1,51 +1,52 @@
-# Code Understanding 
+# Code Understanding Journal
+
+## Language
+Java
 
 ---
 
 # Part 1: Understanding a Specific Feature
 
 ## Feature Investigated
-
 Task Creation and Task Updates
 
 ### Files Involved
-
-* `TaskManagerCli.java`
-* `TaskManager.java`
-* `Task.java`
-* `TaskStatus.java`
-* `TaskPriority.java`
-* `TaskStorage.java`
+- TaskManagerCli.java
+- TaskManager.java
+- Task.java
+- TaskStatus.java
+- TaskPriority.java
+- TaskStorage.java
 
 ### Task Creation Flow
 
 1. The user enters a command.
-2. `TaskManagerCli` receives the command.
-3. `TaskManager` validates the input.
-4. A `Task` object is created.
-5. The task is assigned a default status of `TODO`.
+2. TaskManagerCli receives the command.
+3. TaskManager validates the input.
+4. A Task object is created.
+5. The task is assigned a default status of TODO.
 6. The task is stored and saved to `tasks.json`.
 
 ### Task Status Update Flow
 
 1. The user enters a status command.
-2. `TaskManager` locates the task.
+2. TaskManager locates the task.
 3. The task status is updated.
 4. The changes are saved to `tasks.json`.
 
 ### Data Storage
 
-* Tasks are stored in a `HashMap<String, Task>` while the application is running.
-* Tasks are permanently stored in `tasks.json`.
+- Tasks are stored in a `HashMap<String, Task>` while the application is running.
+- Tasks are permanently stored in `tasks.json`.
 
 ### Design Pattern Found
 
 The application follows a layered architecture:
 
-* CLI Layer
-* Service Layer
-* Model Layer
-* Storage Layer
+- CLI Layer
+- Service Layer
+- Model Layer
+- Storage Layer
 
 ---
 
@@ -61,9 +62,9 @@ Priority values are not used for sorting tasks.
 
 They are used for:
 
-* Filtering tasks
-* Statistics
-* Display formatting
+- Filtering tasks
+- Statistics
+- Display formatting
 
 ## Key Learning
 
@@ -95,15 +96,15 @@ tasks.json
 
 When a task is completed:
 
-* Status changes to `DONE`
-* `completedAt` is updated
-* `updatedAt` is updated
+- Status changes to `DONE`
+- `completedAt` is updated
+- `updatedAt` is updated
 
 ### Possible Issues
 
-* Invalid status values may cause errors.
-* The JSON file may become corrupted if writing is interrupted.
-* Multiple application instances may overwrite each other's changes.
+- Invalid status values may cause errors.
+- The JSON file may become corrupted if writing is interrupted.
+- Multiple application instances may overwrite each other's changes.
 
 ---
 
@@ -114,4 +115,3 @@ This exercise helped me understand how data flows through a layered application.
 The biggest lesson was not making assumptions about how a feature works without checking the code. Initially, I believed priority values controlled task ordering, but I discovered they are only used for categorization.
 
 The AI prompts helped me break the code into smaller sections and gain a better understanding of how the application works.
-
