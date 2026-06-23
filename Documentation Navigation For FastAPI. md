@@ -1,0 +1,166 @@
+# FASTAPI DOCUMENTATION WALKTHROUGH
+
+DOCUMENTATION OVERVIEW
+
+Study Guide:
+
+* FastAPI Fundamentals
+* Requests and Responses
+* Pydantic Models
+* Dependency Injection
+* Security and Authentication
+
+Key Takeaways:
+
+* Getting Started
+* Path Operations
+* Request Body
+* Dependency Injection
+* Security
+
+Notes on Dependency Injection:
+
+* Allows reuse of logic across multiple routes
+* Uses Depends()
+* Keeps code DRY and modular
+
+==================================================
+
+DOCUMENTATION BREAKDOWN
+
+def Depends():
+
+Example Uses:
+
+* Inject reusable logic into routes (authentication, database access, etc.)
+* Avoid repeating code
+* Keep code clean and modular
+
+==================================================
+
+REAL WORLD TRANSLATION
+
+Dependency Injection Example:
+
+from fastapi import FastAPI, Depends, HTTPException
+
+app = FastAPI()
+
+def verify_user(api_key: str):
+if api_key != "secret":
+raise HTTPException(status_code=403, detail="Invalid API Key")
+return api_key
+
+@app.get("/profile")
+def profile(api_key: str = Depends(verify_user)):
+return {"message": "Hi there", "api_key": api_key}
+
+---
+
+Pydantic Model Example:
+
+from pydantic import BaseModel
+
+class Item(BaseModel):
+name: str
+price: float
+
+@app.post("/items")
+def create_item(item: Item):
+return item
+
+---
+
+Background Task Example:
+
+from fastapi import BackgroundTasks
+
+def send_email(email: str):
+print(f"Sending email to {email}...")
+
+@app.post("/register")
+def register(email: str, background_tasks: BackgroundTasks):
+background_tasks.add_task(send_email, email)
+return {"message": "User created successfully."}
+
+==================================================
+
+BLOG API (SAMPLE PROJECT)
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+
+app = FastAPI()
+
+# MODELS
+
+class Post(BaseModel):
+id: int
+title: str
+content: str
+
+class Comment(BaseModel):
+post_id: int
+text: str
+
+# STORAGE
+
+posts: List[Post] = []
+comments: List[Comment] = []
+
+# POSTS
+
+@app.post("/posts")
+def create_post(post: Post):
+posts.append(post)
+return post
+
+@app.get("/posts")
+def get_posts():
+return posts
+
+@app.get("/posts/{post_id}")
+def get_post(post_id: int):
+for post in posts:
+if post.id == post_id:
+return post
+raise HTTPException(status_code=404, detail="Post does not exist")
+
+@app.delete("/posts/{post_id}")
+def delete_post(post_id: int):
+for post in posts:
+if post.id == post_id:
+posts.remove(post)
+return {"message": "Post deleted"}
+raise HTTPException(status_code=404, detail="Post does not exist")
+
+# COMMENTS
+
+@app.post("/comments")
+def add_comment(comment: Comment):
+comments.append(comment)
+return comment
+
+@app.get("/comments/{post_id}")
+def get_comments(post_id: int):
+return [c for c in comments if c.post_id == post_id]
+
+# SEARCH
+
+@app.get("/search")
+def search_posts(query: str):
+return [
+post for post in posts
+if query.lower() in post.title.lower()
+or query.lower() in post.content.lower()
+]
+
+==================================================
+
+WRAP UP
+
+* FastAPI builds APIs using simple Python functions
+* Pydantic handles automatic validation
+* Depends() enables clean dependency injection
+* Documentation maps directly to working code
